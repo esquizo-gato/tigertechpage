@@ -29,22 +29,49 @@
       position: fixed;
       inset: 0;
       z-index: 0;
-      background: #000000;
+      background: transparent;
       pointer-events: none;
     }
 
-    #bg::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url('bg.png');
-      background-repeat: no-repeat;
-      background-position: top right;
-      background-size: contain;
-      opacity: 0.9;
+    /* Aurora neon nítida - canto superior direito */
+    .aurora {
+      position: fixed;
+      top: -100px;
+      right: -100px;
+      width: 800px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(
+        ellipse 70% 60% at 60% 40%,
+        rgba(40, 100, 220, 0.7) 0%,
+        rgba(40, 180, 140, 0.5) 20%,
+        rgba(180, 200, 60, 0.45) 40%,
+        rgba(240, 150, 30, 0.5) 60%,
+        rgba(220, 60, 40, 0.4) 75%,
+        transparent 95%
+      );
+      filter: blur(20px);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Brilho central mais intenso */
+    .aurora-core {
+      position: fixed;
+      top: -50px;
+      right: -50px;
+      width: 400px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(60, 140, 255, 0.6) 0%,
+        rgba(60, 200, 160, 0.3) 25%,
+        rgba(200, 200, 70, 0.2) 50%,
+        transparent 80%
+      );
+      filter: blur(8px);
+      z-index: 0;
       pointer-events: none;
     }
 
@@ -52,7 +79,7 @@
       position: fixed;
       inset: 0;
       z-index: 1;
-      background: rgba(0,0,0,0.25);
+      background: rgba(0,0,0,0);
       pointer-events: none;
     }
 
@@ -572,6 +599,8 @@
 <body>
 
   <div id="bg"></div>
+  <div class="aurora"></div>
+  <div class="aurora-core"></div>
   <div id="overlay"></div>
 
   <!-- NAV -->
