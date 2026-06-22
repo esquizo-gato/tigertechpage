@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TigerTech — Instinto Digital</title>
+  <meta name="description" content="TigerTech. Suporte remoto e automacao de processos para pequenos negocios e autonomos.">
+  <meta property="og:title" content="TigerTech — Instinto Digital">
+  <meta property="og:description" content="Suporte remoto e automacao de processos.">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://coutodearaujojean.github.io/">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #000000;
+      color: #ffffff;
+      overflow-x: hidden;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* --- Background Aurora --- */
+    #bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: #000000;
+      pointer-events: none;
+    }
+
+    #bg::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('bg.png');
+      background-repeat: no-repeat;
+      background-position: top right;
+      background-size: contain;
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    #overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background: rgba(0,0,0,0.25);
+      pointer-events: none;
+    }
+
+    /* --- Navbar --- */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1.2rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.4s ease;
+    }
+
+    nav.scrolled {
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .nav-logo img {
+      height: 30px;
+      width: auto;
+    }
+
+    .nav-logo span {
+      font-weight: 600;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: #ffffff; }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 28px;
+      height: 20px;
+      position: relative;
+      padding: 0;
+    }
+
+    .nav-toggle span {
+      display: block;
+      position: absolute;
+      height: 2px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      left: 0;
+    }
+
+    .nav-toggle span:nth-child(1) { top: 0; }
+    .nav-toggle span:nth-child(2) { top: 9px; }
+    .nav-toggle span:nth-child(3) { top: 18px; }
+
+    .nav-toggle.open span:nth-child(1) {
+      top: 9px;
+      transform: rotate(45deg);
+    }
+    .nav-toggle.open span:nth-child(2) {
+      opacity: 0;
+    }
+    .nav-toggle.open span:nth-child(3) {
+      top: 9px;
+      transform: rotate(-45deg);
+    }
+
+    /* --- Sections --- */
+    section {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 5rem 1.5rem;
+    }
+
+    .container {
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* --- Hero --- */
+    #hero {
+      min-height: 100vh;
+      text-align: center;
+      justify-content: center;
+      padding-top: 7rem;
+    }
+
+    .hero-logo {
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-logo img {
+      height: clamp(80px, 16vw, 150px);
+      width: auto;
+    }
+
+    .hero-title {
+      font-size: clamp(2.2rem, 7vw, 4.5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-title .accent {
+      background: linear-gradient(135deg, #FF7A00, #F7DC6F);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-divider {
+      width: 70px;
+      height: 2px;
+      background: linear-gradient(90deg, #FF7A00, #F7DC6F);
+      margin: 1.2rem auto;
+      border-radius: 2px;
+    }
+
+    .hero-slogan {
+      font-size: clamp(0.95rem, 2.5vw, 1.3rem);
+      font-weight: 300;
+      letter-spacing: 0.25em;
+      color: rgba(255,255,255,0.55);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-sub {
+      font-size: clamp(0.8rem, 1.8vw, 1rem);
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 3rem;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.9rem 2.2rem;
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: #FF7A00;
+      color: #000000;
+    }
+    .btn-primary:hover {
+      background: #e06e00;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #ffffff;
+      border: 1.5px solid rgba(255,255,255,0.2);
+    }
+    .btn-outline:hover {
+      border-color: #FF7A00;
+      color: #FF7A00;
+      transform: translateY(-2px);
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.12);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      animation: hintBounce 2.5s ease infinite;
+    }
+
+    @keyframes hintBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* --- Servicos --- */
+    #servicos {
+      min-height: auto;
+      padding: 6rem 1.5rem;
+    }
+
+    .section-label {
+      text-align: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-align: center;
+      margin-bottom: 3rem;
+      line-height: 1.2;
+    }
+
+    .section-title .accent {
+      background: linear-gradient(135deg, #FF7A00, #F7DC6F);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .service-item {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 6px;
+      padding: 2.5rem 2rem;
+      transition: all 0.4s ease;
+      opacity: 0;
+      transform: translateY(25px);
+    }
+
+    .service-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .service-item:hover {
+      background: rgba(255,122,0,0.04);
+      border-color: rgba(255,122,0,0.12);
+    }
+
+    .service-number {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: #FF7A00;
+      margin-bottom: 1rem;
+    }
+
+    .service-item h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+      color: #ffffff;
+    }
+
+    .service-item p {
+      color: rgba(255,255,255,0.45);
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+
+    /* --- Cases --- */
+    #cases {
+      min-height: auto;
+      padding: 6rem 1.5rem;
+    }
+
+    .cases-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .case-item {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 6px;
+      padding: 2rem;
+      transition: all 0.4s ease;
+      opacity: 0;
+      transform: translateY(25px);
+    }
+
+    .case-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .case-item:hover {
+      border-color: rgba(247,220,111,0.12);
+    }
+
+    .case-tag {
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 100px;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .case-tag.sup { background: rgba(255,122,0,0.1); color: #FF7A00; }
+    .case-tag.aut { background: rgba(247,220,111,0.1); color: #F7DC6F; }
+
+    .case-item h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+
+    .case-item p {
+      color: rgba(255,255,255,0.4);
+      font-size: 0.84rem;
+      line-height: 1.6;
+    }
+
+    .case-empty {
+      border: 1px dashed rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 130px;
+      cursor: default;
+    }
+
+    .case-empty span {
+      color: rgba(255,255,255,0.1);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+    }
+
+    /* --- Contato --- */
+    #contato {
+      min-height: auto;
+      padding: 6rem 1.5rem 8rem;
+    }
+
+    .contato-list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .contato-row {
+      width: 100%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 6px;
+      padding: 1.3rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(15px);
+    }
+
+    .contato-row.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .contato-row:hover {
+      border-color: rgba(255,122,0,0.12);
+      background: rgba(255,122,0,0.03);
+    }
+
+    .contato-row .label {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      color: #FF7A00;
+      border: 1px solid rgba(255,122,0,0.12);
+      border-radius: 50%;
+      flex-shrink: 0;
+      font-weight: 500;
+    }
+
+    .contato-row .info h4 {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.2);
+      margin-bottom: 0.05rem;
+    }
+
+    .contato-row .info p {
+      font-size: 0.92rem;
+      font-weight: 500;
+    }
+
+    .contato-row .info p a {
+      transition: color 0.3s;
+    }
+    .contato-row .info p a:hover {
+      color: #FF7A00;
+    }
+
+    .contato-row .link {
+      margin-left: auto;
+      padding: 0.4rem 1rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.5);
+      transition: all 0.3s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .contato-row .link:hover {
+      border-color: #FF7A00;
+      color: #FF7A00;
+    }
+
+    /* --- Footer --- */
+    footer {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 2rem 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.03);
+    }
+
+    footer p {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.12);
+      letter-spacing: 0.06em;
+    }
+
+    /* --- Mobile --- */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+
+      .nav-links {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.96);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3rem;
+      }
+
+      .nav-links.open { display: flex; }
+      .nav-links a {
+        font-size: 1.1rem;
+        color: rgba(255,255,255,0.6);
+      }
+
+      .nav-toggle { display: block; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="bg"></div>
+  <div id="overlay"></div>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a href="#hero" class="nav-logo">
+      <img src="logo.png" alt="TigerTech">
+      <span>TigerTech</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#servicos">Servicos</a></li>
+      <li><a href="#cases">Cases</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-logo">
+      <img src="logo.png" alt="TigerTech">
+    </div>
+    <h1 class="hero-title">Tiger<span class="accent">Tech</span></h1>
+    <div class="hero-divider"></div>
+    <p class="hero-slogan">Instinto Digital</p>
+    <p class="hero-sub">Suporte remoto &mdash; Automacao de processos</p>
+    <div class="hero-cta">
+      <a href="#contato" class="btn btn-primary">Fale conosco</a>
+      <a href="#servicos" class="btn btn-outline">Servicos</a>
+    </div>
+    <div class="scroll-hint">Role para conhecer</div>
+  </section>
+
+  <!-- SERVICOS -->
+  <section id="servicos">
+    <div class="container">
+      <p class="section-label">Servicos</p>
+      <h2 class="section-title">Solucoes de TI para o<br>seu negocio <span class="accent">crescer</span></h2>
+
+      <div class="services-grid">
+        <div class="service-item" data-delay="0">
+          <p class="service-number">01</p>
+          <h3>Suporte Remoto</h3>
+          <p>Atendimento tecnico agil para resolver problemas de hardware, software, redes e sistemas. Sem deslocamento, sem espera.</p>
+        </div>
+        <div class="service-item" data-delay="100">
+          <p class="service-number">02</p>
+          <h3>Automacao de Processos</h3>
+          <p>Automatize tarefas repetitivas, emissao de documentos, relatorios, backups e muito mais. Reduza erros e ganhe produtividade.</p>
+        </div>
+        <div class="service-item" data-delay="200">
+          <p class="service-number">03</p>
+          <h3>Manutencao Preventiva</h3>
+          <p>Monitoramento e manutencao periodica para evitar falhas antes que acontecam. Seu ambiente de TI sempre saudavel.</p>
+        </div>
+        <div class="service-item" data-delay="300">
+          <p class="service-number">04</p>
+          <h3>Consultoria em TI</h3>
+          <p>Planejamento de infraestrutura, migracao para nuvem, escolha de ferramentas e estrategias digitais sob medida.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CASES -->
+  <section id="cases">
+    <div class="container">
+      <p class="section-label">Cases</p>
+      <h2 class="section-title">Resultados que <span class="accent">entregamos</span></h2>
+
+      <div class="cases-grid">
+        <div class="case-item" data-delay="0">
+          <span class="case-tag aut">Automacao</span>
+          <h3>Emissao de NF automatizada</h3>
+          <p>Automatizamos o processo de emissao de notas fiscais de um escritorio de contabilidade, reduzindo o tempo de 40min para 3min por nota.</p>
+        </div>
+
+        <div class="case-item" data-delay="100">
+          <span class="case-tag sup">Suporte</span>
+          <h3>Infraestrutura de rede</h3>
+          <p>Reestruturamos a rede de uma clinica com 12 computadores, eliminando quedas de conexao e melhorando a seguranca dos dados.</p>
+        </div>
+
+        <div class="case-item case-empty" data-delay="200">
+          <span>Espaco reservado para seu case</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTATO -->
+  <section id="contato">
+    <div class="container">
+      <p class="section-label">Contato</p>
+      <h2 class="section-title">Vamos conversar<br><span class="accent">sobre seu projeto</span></h2>
+
+      <div class="contato-list">
+        <div class="contato-row" data-delay="0">
+          <div class="label">@</div>
+          <div class="info">
+            <h4>E-mail</h4>
+            <p><a href="mailto:coutodearaujojean@gmail.com">coutodearaujojean@gmail.com</a></p>
+          </div>
+          <a href="mailto:coutodearaujojean@gmail.com" class="link">Enviar</a>
+        </div>
+
+        <div class="contato-row" data-delay="100">
+          <div class="label">W</div>
+          <div class="info">
+            <h4>WhatsApp</h4>
+            <p><a href="https://wa.me/5534991305726" target="_blank">(34) 99130-5726</a></p>
+          </div>
+          <a href="https://wa.me/5534991305726" target="_blank" class="link">Falar</a>
+        </div>
+
+        <div class="contato-row" data-delay="200">
+          <div class="label">F</div>
+          <div class="info">
+            <h4>Fiverr</h4>
+            <p><a href="https://www.fiverr.com/s/99VEPaA" target="_blank">Perfil Fiverr</a></p>
+          </div>
+          <a href="https://www.fiverr.com/s/99VEPaA" target="_blank" class="link">Acessar</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 TigerTech &mdash; Instinto Digital. Todos os direitos reservados.</p>
+  </footer>
+
+  <script>
+    var nav = document.getElementById('navbar');
+    var toggle = document.getElementById('navToggle');
+    var links = document.getElementById('navLinks');
+
+    window.addEventListener('scroll', function() {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    toggle.addEventListener('click', function() {
+      links.classList.toggle('open');
+      toggle.classList.toggle('open');
+    });
+
+    function closeNav() {
+      links.classList.remove('open');
+      toggle.classList.remove('open');
+    }
+
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var delay = parseInt(entry.target.getAttribute('data-delay')) || 0;
+          setTimeout(function() {
+            entry.target.classList.add('visible');
+          }, delay);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.service-item, .case-item, .contato-row').forEach(function(el) {
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
